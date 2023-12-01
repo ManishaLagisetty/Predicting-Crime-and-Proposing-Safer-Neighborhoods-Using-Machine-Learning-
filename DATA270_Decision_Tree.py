@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[16]:
+# In[ ]:
+
+
+pip install joblib
+
+
+# In[8]:
 
 
 import pandas as pd
@@ -22,17 +28,21 @@ df.rename(columns={'Primary Type': 'Crime_Type'}, inplace=True)
 
 print("Missing values:\n", df.isnull().sum())
 
+#columns_to_convert = ['Year', 'Location Description', 'Crime_Type', 'Description']
+#df[columns_to_convert] = df[columns_to_convert].apply(pd.to_numeric, errors='coerce')
+#df[columns_to_convert] = df[columns_to_convert].fillna(0).astype(int)
+
 df.head(5)
 
 
 # ## Common functions for metrics
 
-# In[17]:
+# In[9]:
 
 
 # precision, recall, and F1 score
 def print_metrics(y_test, y_test_pred):
-    precision = precision_score(y_test, y_test_pred, average='weighted')
+    precision = precision_score(y_test, y_test_pred, average='weighted')  # Use 'weighted' for multiclass
     recall = recall_score(y_test, y_test_pred, average='weighted')
     f1 = f1_score(y_test, y_test_pred, average='weighted')
 
@@ -41,14 +51,16 @@ def print_metrics(y_test, y_test_pred):
     print(f'F1 Score: {f1:.3f}')
 
 
-# In[18]:
+# In[10]:
 
 
 def print_class_report_conf_matrix(y_test, y_test_pred):
     # Confusion Matrix
     conf_matrix = confusion_matrix(y_test, y_test_pred)
+    #np.set_printoptions(threshold=np.inf)
     print('Confusion Matrix:')
     print(conf_matrix)
+    #np.set_printoptions(threshold=1000)
 
     # Classification Report
     class_report = classification_report(y_test, y_test_pred)
@@ -60,7 +72,7 @@ def print_class_report_conf_matrix(y_test, y_test_pred):
     print_metrics(y_test, y_test_pred)
 
 
-# In[19]:
+# In[11]:
 
 
 def show_roc_auc_curve(X_test, y_test, model):
@@ -89,7 +101,7 @@ def show_roc_auc_curve(X_test, y_test, model):
     plt.show()
 
 
-# In[20]:
+# In[12]:
 
 
 df.info()
@@ -97,7 +109,7 @@ df.info()
 
 # ## Splitting into training, testing and validation datasets
 
-# In[21]:
+# In[13]:
 
 
 target_col = 'Crime_Type'
@@ -105,7 +117,7 @@ X = df.drop(target_col, axis=1)
 y = df[target_col]
 
 # Split the data into training, testing, and validation sets
-# 70:20:10
+# 70% training, 20% testing, 10% validation
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
 X_test, X_val, y_test, y_val = train_test_split(X_temp, y_temp, test_size=0.33, random_state=42)
 
@@ -114,7 +126,7 @@ print(len(X_train), len(y_train), len(X_test), len(y_test), len(X_val), len(y_va
 
 # ## Baseline Model
 
-# In[22]:
+# In[14]:
 
 
 start_time = time.time()
@@ -136,19 +148,19 @@ end_time = time.time()
 print(f"Training time: {end_time - start_time} seconds")
 
 
-# In[23]:
+# In[15]:
 
 
 print_metrics(y_test, y_test_pred)
 
 
-# In[24]:
+# In[16]:
 
 
 print_class_report_conf_matrix(y_test, y_test_pred)
 
 
-# In[25]:
+# In[17]:
 
 
 show_roc_auc_curve(X_test, y_test, classifier)
@@ -165,7 +177,7 @@ print(f'Model saved to {model_filename}')
 
 # ## Do GridSearch to find best hyperparameters for decision tree classifier
 
-# In[15]:
+# In[10]:
 
 
 dtree = DecisionTreeClassifier()
@@ -192,7 +204,7 @@ print("Accuracy on Test Set:", accuracy)
 
 # ## Hyperparameter tuned model
 
-# In[26]:
+# In[18]:
 
 
 start_time = time.time()
@@ -218,29 +230,35 @@ end_time = time.time()
 print(f"Training time: {end_time - start_time} seconds")
 
 
-# In[27]:
+# In[19]:
 
 
 print_metrics(y_test, y_test_pred)
 
 
-# In[28]:
+# In[20]:
 
 
 print_class_report_conf_matrix(y_test, y_test_pred)
 
 
-# In[29]:
+# In[21]:
 
 
 show_roc_auc_curve(X_test, y_test, best_clssifier)
 
 
-# In[30]:
+# In[9]:
 
 
 # Save the trained model
 model_filename = 'dt_hyperparameter_tuning_model.joblib'
 joblib.dump(best_clssifier, model_filename)
 print(f'Model saved to {model_filename}')
+
+
+# In[ ]:
+
+
+
 
