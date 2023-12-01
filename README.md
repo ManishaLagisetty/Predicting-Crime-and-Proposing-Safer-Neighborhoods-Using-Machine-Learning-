@@ -26,7 +26,7 @@ Data_270_Data Collection_Preprocessing_Transformation_Feature_Engineering.ipynb
 
 
 #Decision Tree model
-- Decision_Tree.ipynb
+- DATA270_Decision_Tree.ipynb
 
 
 #XGBoost
